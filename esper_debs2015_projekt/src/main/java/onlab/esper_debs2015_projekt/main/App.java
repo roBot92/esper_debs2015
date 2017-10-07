@@ -22,10 +22,7 @@ import onlab.positioning.CellHelper;
 import onlab.utility.DataFileParser;
 import onlab.utility.FrequentRoutesToplistSet;
 
-/**
- * Hello world!
- *
- */
+
 public class App {
 	private static String testQuery = "select count(*) as frequency, pickup_cell, dropoff_cell, max(dropoff_datetime) as last_inserted from TaxiLog#time(30 min)"
 			+ "where pickup_cell is not null and dropoff_cell is not null group by pickup_cell, dropoff_cell";
