@@ -1,0 +1,1 @@
+create window TaxiLogLocationWindow#time(30 min) as (hack_license String, dropoff_cell Object, valid Boolean)

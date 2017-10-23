@@ -1,0 +1,1 @@
+select count(*), dropoff_cell from TaxiLogLocationWindow where valid = true group by dropoff_cell

@@ -1,0 +1,1 @@
+select count(*) as frequency, pickup_cell, dropoff_cell, max(dropoff_datetime) as last_inserted from TaxiLog(pickup_cell!=null, dropoff_cell!=null)#time(30 min)

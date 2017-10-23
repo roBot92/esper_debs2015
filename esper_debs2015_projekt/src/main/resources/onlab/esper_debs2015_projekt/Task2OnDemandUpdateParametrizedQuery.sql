@@ -1,0 +1,1 @@
+update TaxiLogLocationWindow set valid=false where hack_license = ?

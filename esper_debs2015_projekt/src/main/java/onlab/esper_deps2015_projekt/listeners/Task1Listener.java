@@ -1,4 +1,4 @@
-package onlab.esper_deps2015_projekt;
+package onlab.esper_deps2015_projekt.listeners;
 
 import java.util.Date;
 
@@ -29,11 +29,12 @@ public class Task1Listener implements UpdateListener {
 		result.append("\t");
 		result.append(newData[0].get("dropoff_cell").toString());
 		result.append("\t");
-		result.append(newData[0].get("last_inserted").toString());
-		System.out.println(result);*/
+		result.append(newData[0].get("last_inserted").toString());*/
+		System.out.println("faaaaa");
 		for(EventBean taxiLogBean : newData) {
-			toplist.refreshRoute((Cell)taxiLogBean.get("pickup_cell"), (Cell)taxiLogBean.get("dropoff_cell"), 
-								(Date)taxiLogBean.get("last_inserted"),  ((Long)taxiLogBean.get("frequency")).intValue());
+			System.out.println(taxiLogBean);
+			/*toplist.refreshRoute((Cell)taxiLogBean.get("pickup_cell"), (Cell)taxiLogBean.get("dropoff_cell"), 
+								(Date)taxiLogBean.get("last_inserted"),  ((Long)taxiLogBean.get("frequency")).intValue());*/
 		}
 		
 		
