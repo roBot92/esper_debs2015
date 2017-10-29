@@ -1,1 +1,2 @@
-select count(*) as frequency, pickup_cell, dropoff_cell, max(dropoff_datetime) as last_inserted from TaxiLog(pickup_cell!=null, dropoff_cell!=null)#time(30 min)
+select count(*) as frequency, pickup_cell, dropoff_cell, max(dropoff_datetime) as last_inserted from TaxiLog#time(30 min) 
+where pickup_cell is not null and dropoff_cell is not null and dropoff_datetime is not null group by pickup_cell, dropoff_cell

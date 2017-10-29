@@ -11,34 +11,26 @@ import onlab.utility.FrequentRoutesToplistSet;
 
 public class Task1Listener implements UpdateListener {
 
-	private FrequentRoutesToplistSet<Route> toplist = new FrequentRoutesToplistSet<Route>();
+	private FrequentRoutesToplistSet toplist = new FrequentRoutesToplistSet();
 
-	
-	public Task1Listener(FrequentRoutesToplistSet<Route> toplist) {
-		super();
+	private static String FREQUENCY = "frequency";
+	private static String PICKUP_CELL = "pickup_cell";
+	private static String DROPOFF_CELL = "dropoff_cell";
+	private static String LAST_INSERTED = "last_inserted";
+
+	public Task1Listener(FrequentRoutesToplistSet toplist) {
 		this.toplist = toplist;
 	}
-
 
 	@Override
 	public void update(EventBean[] newData, EventBean[] oldData) {
 
-		/*StringBuilder result = new StringBuilder(newData[0].get("frequency").toString());
-		result.append("\t");
-		result.append(newData[0].get("pickup_cell").toString());
-		result.append("\t");
-		result.append(newData[0].get("dropoff_cell").toString());
-		result.append("\t");
-		result.append(newData[0].get("last_inserted").toString());*/
-		System.out.println("faaaaa");
-		for(EventBean taxiLogBean : newData) {
-			System.out.println(taxiLogBean);
-			/*toplist.refreshRoute((Cell)taxiLogBean.get("pickup_cell"), (Cell)taxiLogBean.get("dropoff_cell"), 
-								(Date)taxiLogBean.get("last_inserted"),  ((Long)taxiLogBean.get("frequency")).intValue());*/
+		if (newData != null) {
+			for (EventBean taxiLogBean : newData) {
+				toplist.refreshRoute((Cell) taxiLogBean.get(PICKUP_CELL), (Cell) taxiLogBean.get(DROPOFF_CELL),
+						(Date) taxiLogBean.get(LAST_INSERTED), ((Long) taxiLogBean.get(FREQUENCY)).intValue());
+			}
 		}
-		
-		
-		
 
 	}
 

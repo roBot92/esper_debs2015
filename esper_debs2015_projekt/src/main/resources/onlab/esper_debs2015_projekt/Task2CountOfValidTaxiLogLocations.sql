@@ -1,1 +1,1 @@
-select count(*), dropoff_cell from TaxiLogLocationWindow where valid = true group by dropoff_cell
+select count(*) as countOfTaxes, max(insertTime) lastTime,dropoff_cell as cell from TaxiLogLocationWindow where valid = true group by dropoff_cell

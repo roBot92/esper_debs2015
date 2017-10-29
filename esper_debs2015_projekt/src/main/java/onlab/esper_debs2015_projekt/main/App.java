@@ -6,22 +6,17 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Scanner;
 
-import com.espertech.esper.client.EPOnDemandPreparedQuery;
 import com.espertech.esper.client.EPOnDemandPreparedQueryParameterized;
-import com.espertech.esper.client.EPOnDemandQueryResult;
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
-import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.time.CurrentTimeEvent;
 import com.espertech.esper.client.time.TimerControlEvent;
 
 import onlab.esper_deps2015_projekt.listeners.Task1Listener;
 import onlab.esper_deps2015_projekt.listeners.Task2CountOfEmptyTaxesListener;
 import onlab.esper_deps2015_projekt.listeners.Task2MedianListener;
-import onlab.event.AreaWithProfit;
-import onlab.event.Route;
 import onlab.event.TaxiLog;
 import onlab.main.DebsMain;
 import onlab.positioning.CellHelper;
@@ -38,13 +33,23 @@ public class App {
 	static String NAMED_WINDOW_INSERTION_QUERY = "C:\\Users\\Boti\\git_exper\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2InsertIntoLocationNamedWindow.sql";
 	static String ONDEMAND_UPDATE_NAMED_WINDOW_QUERY = "C:\\Users\\Boti\\git_exper\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2OnDemandUpdateParametrizedQuery.sql";
 
-	static FrequentRoutesToplistSet<Route> freqRouteToplist = new FrequentRoutesToplistSet<Route>();
-	static ProfitableAreaToplistSet<AreaWithProfit> mostProfArea = new ProfitableAreaToplistSet<AreaWithProfit>();
+	static FrequentRoutesToplistSet freqRouteToplist = new FrequentRoutesToplistSet();
+	static ProfitableAreaToplistSet mostProfArea = new ProfitableAreaToplistSet();
+
+	private static long TEST_INTERVAL_IN_IN_MS = 24 * 60 * 60 * 1000;
 
 	public static void main(String[] args) {
 
 		try {
+			long currentTime = System.currentTimeMillis();
+			runTask1();
+			long elapsed = (System.currentTimeMillis() - currentTime) / 1000;
+			System.out.println("Task1: " + elapsed + " seconds.");
+
+			currentTime = System.currentTimeMillis();
 			runTask2();
+			elapsed = (System.currentTimeMillis() - currentTime) / 1000;
+			System.out.println("Task2: " + elapsed + " seconds.");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -61,13 +66,11 @@ public class App {
 		EPRuntime runtime = engine.getEPRuntime();
 		// Set to external clock
 		runtime.sendEvent(new TimerControlEvent(TimerControlEvent.ClockType.CLOCK_EXTERNAL));
-
-		FrequentRoutesToplistSet<Route> routeToplist = new FrequentRoutesToplistSet<>();
-		statement.addListener(new Task1Listener(routeToplist));
+		statement.addListener(new Task1Listener(freqRouteToplist));
 		return runtime;
 	}
 
-	public static EPRuntime initializeEngineForTask2() {
+	private static EPRuntime initializeEngineForTask2() {
 
 		EPServiceProvider engine = EPServiceProviderManager.getDefaultProvider();
 
@@ -120,25 +123,31 @@ public class App {
 
 		try (DataFileParser dataFileParser = new DataFileParser(DebsMain.DATA_FILE_URL, DebsMain.DELIMITER,
 				DebsMain.columncount, chelper)) {
-			long currentTime = 0;
-			for (int i = 0; i < 2; i++) {
-				taxiLogs = dataFileParser.parseNextLinesFromCSVGroupedByDropoffDate();
-				boolean currentTimeSent = false;
-				for (TaxiLog tlog : taxiLogs) {
-					if (!currentTimeSent) {
-						currentTime = tlog.getDropoff_datetime().getTime();
-						runtime.sendEvent(new CurrentTimeEvent(currentTime));
-						currentTimeSent = true;
+
+			taxiLogs = dataFileParser.parseNextLinesFromCSVGroupedByDropoffDate();
+			long currentTime = DataFileParser.getCURRENT_TIME();
+			long startingTime = DataFileParser.getCURRENT_TIME();
+
+			long countOfProcessedTlogs = 0;
+			while (currentTime - startingTime <= TEST_INTERVAL_IN_IN_MS) {
+				runtime.sendEvent(new CurrentTimeEvent(currentTime));
+				if (currentTime >= DataFileParser.getCURRENT_TIME()) {
+					for (TaxiLog tlog : taxiLogs) {
+						tlog.setInserted(System.currentTimeMillis());
+						runtime.sendEvent(tlog);
+						countOfProcessedTlogs++;
 					}
-					runtime.sendEvent(tlog);
+					taxiLogs = dataFileParser.parseNextLinesFromCSVGroupedByDropoffDate();
+					// System.out.println(freqRouteToplist);
 				}
 
+				currentTime += 1000;
 			}
-
-			currentTime += 30 * 60 * 1000;
-			runtime.sendEvent(new CurrentTimeEvent(currentTime));
+			
+			System.out.println("Processed tlog in Task1: " + countOfProcessedTlogs);
 
 		}
+
 	}
 
 	public static void runTask2() throws FileNotFoundException {
@@ -153,19 +162,27 @@ public class App {
 
 		try (DataFileParser dataFileParser = new DataFileParser(DebsMain.DATA_FILE_URL, DebsMain.DELIMITER,
 				DebsMain.columncount, chelper)) {
-			long currentTime = 0;
-			for (int i = 0; i < 20; i++) {
-				taxiLogs = dataFileParser.parseNextLinesFromCSVGroupedByDropoffDate();
-				boolean currentTimeSent = false;
-				for (TaxiLog tlog : taxiLogs) {
-					if (!currentTimeSent) {
-						currentTime = tlog.getDropoff_datetime().getTime();
-						runtime.sendEvent(new CurrentTimeEvent(currentTime));
-						currentTimeSent = true;
+
+			taxiLogs = dataFileParser.parseNextLinesFromCSVGroupedByDropoffDate();
+			long currentTime = DataFileParser.getCURRENT_TIME();
+			long startingTime = DataFileParser.getCURRENT_TIME();
+
+			while (currentTime - startingTime <= TEST_INTERVAL_IN_IN_MS) {
+				runtime.sendEvent(new CurrentTimeEvent(currentTime));
+				if (currentTime >= DataFileParser.getCURRENT_TIME()) {
+					for (TaxiLog tlog : taxiLogs) {
+						tlog.setInserted(System.currentTimeMillis());
+						updateNamedWindowQuery.setObject(1, tlog.getHack_license());
+						runtime.executeQuery(updateNamedWindowQuery);
+						runtime.sendEvent(tlog);
 					}
-					updateNamedWindowQuery.setObject(1, tlog.getHack_license());
-					runtime.executeQuery(updateNamedWindowQuery);
-					runtime.sendEvent(tlog);
+					taxiLogs = dataFileParser.parseNextLinesFromCSVGroupedByDropoffDate();
+					// System.out.println(mostProfArea);
+				}
+
+				currentTime += 1000;
+				if ((currentTime - startingTime) % (1000 * 60 * 60) == 0) {
+					System.out.println(mostProfArea);
 				}
 
 			}

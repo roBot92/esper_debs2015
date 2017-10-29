@@ -1,1 +1,1 @@
-insert into TaxiLogLocationWindow select hack_license, dropoff_cell, cast(true, boolean) as valid from TaxiLog
+insert into TaxiLogLocationWindow select hack_license, dropoff_cell, cast(true, boolean) as valid, dropoff_datetime as insertTime from TaxiLog#time(30 min)
