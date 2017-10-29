@@ -7,16 +7,11 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.espertech.esper.client.EPOnDemandPreparedQuery;
 import com.espertech.esper.client.EPOnDemandPreparedQueryParameterized;
-import com.espertech.esper.client.EPOnDemandQueryResult;
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
-import com.espertech.esper.client.EPStatement;
-import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.time.CurrentTimeEvent;
-import com.espertech.esper.client.time.TimerControlEvent;
 
 import junit.framework.TestCase;
 import onlab.event.TaxiLog;
@@ -31,7 +26,6 @@ public class Task2Test extends TestCase {
 
 	private static String driver1 = "license1";
 	private static String driver2 = "license2";
-	private static String driver3 = "license3";
 
 	private static List<Cell> cells = (List<Cell>) Arrays.asList(new Cell(1, 1), new Cell(2, 2), new Cell(3, 3),
 			new Cell(4, 4), new Cell(5, 5));
@@ -49,7 +43,7 @@ public class Task2Test extends TestCase {
 		// statement.addListener(new Task2PreviousCellListener());
 
 		//engine.getEPAdministrator().createEPL(App.getEplQuery(App.LOCATION_WINDOW_DECLARATION));
-		EPStatement statement = engine.getEPAdministrator().createEPL(
+		/*EPStatement statement = engine.getEPAdministrator().createEPL(
 				"insert into TaxiLogLocationWindow select hack_license, dropoff_cell, cast(true, boolean) as valid from TaxiLog");
 
 		EPStatement statement2 = engine.getEPAdministrator().createEPL(
@@ -65,7 +59,7 @@ public class Task2Test extends TestCase {
 		// Set to external clock
 		runtime.sendEvent(new TimerControlEvent(TimerControlEvent.ClockType.CLOCK_EXTERNAL));
 
-		this.runtime = runtime;
+		this.runtime = runtime;*/
 	}
 
 	@Test

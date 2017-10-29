@@ -1,5 +1,6 @@
 package onlab.esper_deps2015_projekt.listeners;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.espertech.esper.client.EventBean;
@@ -24,7 +25,7 @@ public class Task2MedianListener implements UpdateListener {
 		if (newEvents != null) {
 			for (EventBean event : newEvents) {
 				mostProfArea.refreshAreaMedian((Cell) event.get(CELL), (Date) event.get(LAST_INSERTED),
-						(Double) event.get(MEDIAN));
+						BigDecimal.valueOf((Double) event.get(MEDIAN)));
 			}
 		}
 

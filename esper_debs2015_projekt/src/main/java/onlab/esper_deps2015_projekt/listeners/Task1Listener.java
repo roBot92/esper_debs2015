@@ -5,7 +5,6 @@ import java.util.Date;
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
 
-import onlab.event.Route;
 import onlab.positioning.Cell;
 import onlab.utility.FrequentRoutesToplistSet;
 
