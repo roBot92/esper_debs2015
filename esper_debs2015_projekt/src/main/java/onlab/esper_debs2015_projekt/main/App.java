@@ -3,6 +3,7 @@ package onlab.esper_debs2015_projekt.main;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,6 +20,7 @@ import onlab.esper_deps2015_projekt.listeners.Task2CountOfEmptyTaxesListener;
 import onlab.esper_deps2015_projekt.listeners.Task2MedianListener;
 import onlab.event.TaxiLog;
 import onlab.main.DebsMain;
+import onlab.positioning.Cell;
 import onlab.positioning.CellHelper;
 import onlab.utility.DataFileParser;
 import onlab.utility.FrequentRoutesToplistSet;
@@ -36,13 +38,13 @@ public class App {
 	static FrequentRoutesToplistSet freqRouteToplist = new FrequentRoutesToplistSet();
 	static ProfitableAreaToplistSet mostProfArea = new ProfitableAreaToplistSet();
 
-	private static long TEST_INTERVAL_IN_IN_MS = 24 * 60 * 60 * 1000;
+	private static long TEST_INTERVAL_IN_IN_MS = 1 * 60 * 60 * 1000;
 
 	public static void main(String[] args) {
 
 		try {
 			long currentTime = System.currentTimeMillis();
-			runTask1();
+			//runTask1();
 			long elapsed = (System.currentTimeMillis() - currentTime) / 1000;
 			System.out.println("Task1: " + elapsed + " seconds.");
 
@@ -56,7 +58,7 @@ public class App {
 
 	}
 
-	private static EPRuntime initializeEngineForTask1() {
+	public static EPRuntime initializeEngineForTask1(FrequentRoutesToplistSet toplist) {
 		EPServiceProvider engine = EPServiceProviderManager.getDefaultProvider();
 
 		engine.getEPAdministrator().getConfiguration().addEventType(TaxiLog.class);
@@ -66,25 +68,31 @@ public class App {
 		EPRuntime runtime = engine.getEPRuntime();
 		// Set to external clock
 		runtime.sendEvent(new TimerControlEvent(TimerControlEvent.ClockType.CLOCK_EXTERNAL));
-		statement.addListener(new Task1Listener(freqRouteToplist));
+		statement.addListener(new Task1Listener(toplist));
 		return runtime;
 	}
 
-	private static EPRuntime initializeEngineForTask2() {
+	public static EPRuntime initializeEngineForTask2(ProfitableAreaToplistSet toplist) {
 
 		EPServiceProvider engine = EPServiceProviderManager.getDefaultProvider();
 
+		
 		engine.getEPAdministrator().getConfiguration().addEventType(TaxiLog.class);
 
 		engine.getEPAdministrator().createEPL(getEplQuery(NAMED_WINDOW_DECLARATION));
 		engine.getEPAdministrator().createEPL(getEplQuery(NAMED_WINDOW_INSERTION_QUERY));
+		engine.getEPAdministrator().createEPL("create index hlIndex on TaxiLogLocationWindow(hack_license)");
+		
+		
 		EPStatement medianStatement = engine.getEPAdministrator().createEPL(getEplQuery(MEDIAN_OF_CELL));
-		medianStatement.addListener(new Task2MedianListener(mostProfArea));
+		medianStatement.addListener(new Task2MedianListener(toplist));
 		EPStatement countOfEmptyTaxesStatement = engine.getEPAdministrator()
 				.createEPL(getEplQuery(COUNT_OF_EMPTY_TAXILOGS_BY_CELL));
-		countOfEmptyTaxesStatement.addListener(new Task2CountOfEmptyTaxesListener(mostProfArea));
+		countOfEmptyTaxesStatement.addListener(new Task2CountOfEmptyTaxesListener(toplist));
 
+		
 		EPRuntime runtime = engine.getEPRuntime();
+		
 		// Set to external clock
 		runtime.sendEvent(new TimerControlEvent(TimerControlEvent.ClockType.CLOCK_EXTERNAL));
 
@@ -119,7 +127,7 @@ public class App {
 				DebsMain.SHIFT_X.divide(BigDecimal.valueOf(2)), DebsMain.SHIFT_Y.divide(BigDecimal.valueOf(2)), 600);
 		List<TaxiLog> taxiLogs = null;
 
-		EPRuntime runtime = initializeEngineForTask1();
+		EPRuntime runtime = initializeEngineForTask1(freqRouteToplist);
 
 		try (DataFileParser dataFileParser = new DataFileParser(DebsMain.DATA_FILE_URL, DebsMain.DELIMITER,
 				DebsMain.columncount, chelper)) {
@@ -142,6 +150,9 @@ public class App {
 				}
 
 				currentTime += 1000;
+				if ((currentTime - startingTime) % (1000 * 60) == 0) {
+					System.out.println(freqRouteToplist);
+				}
 			}
 			
 			System.out.println("Processed tlog in Task1: " + countOfProcessedTlogs);
@@ -152,7 +163,7 @@ public class App {
 
 	public static void runTask2() throws FileNotFoundException {
 
-		EPRuntime runtime = initializeEngineForTask2();
+		EPRuntime runtime = initializeEngineForTask2(mostProfArea);
 		CellHelper chelper = new CellHelper(DebsMain.FIRST_CELL_X, DebsMain.FIRST_CELL_Y, DebsMain.SHIFT_X,
 				DebsMain.SHIFT_Y, 300);
 		List<TaxiLog> taxiLogs = null;
@@ -180,10 +191,14 @@ public class App {
 					// System.out.println(mostProfArea);
 				}
 
-				currentTime += 1000;
-				if ((currentTime - startingTime) % (1000 * 60 * 60) == 0) {
+				
+				if ((currentTime - startingTime) % (60*60*1000) == 0) {
 					System.out.println(mostProfArea);
+					System.out.println("currentTime:" + new Date(currentTime));
+					System.out.println(mostProfArea.getAreaByCell(new Cell(159,180)));
+					
 				}
+				currentTime += 1000;
 
 			}
 

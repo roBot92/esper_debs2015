@@ -24,8 +24,11 @@ public class Task2MedianListener implements UpdateListener {
 	public void update(EventBean[] newEvents, EventBean[] oldEvents) {
 		if (newEvents != null) {
 			for (EventBean event : newEvents) {
-				mostProfArea.refreshAreaMedian((Cell) event.get(CELL), (Date) event.get(LAST_INSERTED),
-						BigDecimal.valueOf((Double) event.get(MEDIAN)));
+				
+				Cell cell = (Cell) event.get(CELL);
+				Date lastInserted = (Date) event.get(LAST_INSERTED);
+				Double median = (Double) event.get(MEDIAN);
+				mostProfArea.refreshAreaMedian(cell, lastInserted, median == null ? BigDecimal.ZERO : BigDecimal.valueOf(median));
 			}
 		}
 

@@ -1,1 +1,1 @@
-update TaxiLogLocationWindow set valid=false where hack_license = ?
+update TaxiLogLocationWindow set valid=false where valid = true and hack_license = ?
