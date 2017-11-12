@@ -62,7 +62,6 @@ public class App {
 		EPServiceProvider engine = EPServiceProviderManager.getDefaultProvider();
 
 		engine.getEPAdministrator().getConfiguration().addEventType(TaxiLog.class);
-		// EPStatement statement = engine.getEPAdministrator().createEPL(testQuery);
 		EPStatement statement = engine.getEPAdministrator().createEPL(getEplQuery(TASK1_QUERY));
 
 		EPRuntime runtime = engine.getEPRuntime();
@@ -192,12 +191,11 @@ public class App {
 				}
 
 				
-				if ((currentTime - startingTime) % (60*60*1000) == 0) {
+			/*	if ((currentTime - startingTime) % (60*60*1000) == 0) {
 					System.out.println(mostProfArea);
 					System.out.println("currentTime:" + new Date(currentTime));
-					System.out.println(mostProfArea.getAreaByCell(new Cell(159,180)));
 					
-				}
+				}*/
 				currentTime += 1000;
 
 			}
