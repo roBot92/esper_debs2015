@@ -20,7 +20,6 @@ import onlab.esper_deps2015_projekt.listeners.Task2CountOfEmptyTaxesListener;
 import onlab.esper_deps2015_projekt.listeners.Task2MedianListener;
 import onlab.event.TaxiLog;
 import onlab.main.DebsMain;
-import onlab.positioning.Cell;
 import onlab.positioning.CellHelper;
 import onlab.utility.DataFileParser;
 import onlab.utility.FrequentRoutesToplistSet;
@@ -44,14 +43,14 @@ public class App {
 
 		try {
 			long currentTime = System.currentTimeMillis();
-			//runTask1();
+			runTask1();
 			long elapsed = (System.currentTimeMillis() - currentTime) / 1000;
 			System.out.println("Task1: " + elapsed + " seconds.");
 
-			currentTime = System.currentTimeMillis();
+			/*currentTime = System.currentTimeMillis();
 			runTask2();
 			elapsed = (System.currentTimeMillis() - currentTime) / 1000;
-			System.out.println("Task2: " + elapsed + " seconds.");
+			System.out.println("Task2: " + elapsed + " seconds.");*/
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -135,7 +134,7 @@ public class App {
 			long currentTime = DataFileParser.getCURRENT_TIME();
 			long startingTime = DataFileParser.getCURRENT_TIME();
 
-			long countOfProcessedTlogs = 0;
+			long countOfProcessedTlogs = taxiLogs.size();
 			while (currentTime - startingTime <= TEST_INTERVAL_IN_IN_MS) {
 				runtime.sendEvent(new CurrentTimeEvent(currentTime));
 				if (currentTime >= DataFileParser.getCURRENT_TIME()) {
@@ -148,10 +147,12 @@ public class App {
 					// System.out.println(freqRouteToplist);
 				}
 
-				currentTime += 1000;
-				if ((currentTime - startingTime) % (1000 * 60) == 0) {
+				
+				if ((currentTime - startingTime) % (1000 * 60 * 60) == 0) {
 					System.out.println(freqRouteToplist);
+					System.out.println("current time:" + new Date(currentTime) + " processed:" + countOfProcessedTlogs);
 				}
+				currentTime += 1000;
 			}
 			
 			System.out.println("Processed tlog in Task1: " + countOfProcessedTlogs);
