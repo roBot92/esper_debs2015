@@ -28,16 +28,6 @@
 			<groupId>onlab</groupId>
 			<artifactId>drools_debs2015_projekt</artifactId>
 			<version>1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.drools</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.kie</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

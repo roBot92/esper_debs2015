@@ -26,13 +26,14 @@ import onlab.utility.FrequentRoutesToplistSet;
 import onlab.utility.ProfitableAreaToplistSet;
 
 public class App {
-	static String TASK1_QUERY = "C:\\Users\\Boti\\git_exper\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task1Query.sql";
 
-	static String MEDIAN_OF_CELL = "C:\\Users\\Boti\\git_exper\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2GetMedianByCell.sql";
-	static String NAMED_WINDOW_DECLARATION = "C:\\Users\\Boti\\git_exper\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2LocationNamedWindowDeclaration.sql";
-	static String COUNT_OF_EMPTY_TAXILOGS_BY_CELL = "C:\\Users\\Boti\\git_exper\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2CountOfValidTaxiLogLocations.sql";
-	static String NAMED_WINDOW_INSERTION_QUERY = "C:\\Users\\Boti\\git_exper\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2InsertIntoLocationNamedWindow.sql";
-	static String ONDEMAND_UPDATE_NAMED_WINDOW_QUERY = "C:\\Users\\Boti\\git_exper\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2OnDemandUpdateParametrizedQuery.sql";
+	static String TASK1_QUERY = "C:\\Users\\Boti\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task1Query.sql";
+
+	static String MEDIAN_OF_CELL = "C:\\Users\\Boti\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2GetMedianByCell.sql";
+	static String NAMED_WINDOW_DECLARATION = "C:\\Users\\Boti\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2LocationNamedWindowDeclaration.sql";
+	static String COUNT_OF_EMPTY_TAXILOGS_BY_CELL = "C:\\Users\\Boti\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2CountOfValidTaxiLogLocations.sql";
+	static String NAMED_WINDOW_INSERTION_QUERY = "C:\\Users\\Boti\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2InsertIntoLocationNamedWindow.sql";
+	static String ONDEMAND_UPDATE_NAMED_WINDOW_QUERY = "C:\\Users\\Boti\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2OnDemandUpdateParametrizedQuery.sql";
 
 	static FrequentRoutesToplistSet freqRouteToplist = new FrequentRoutesToplistSet();
 	static ProfitableAreaToplistSet mostProfArea = new ProfitableAreaToplistSet();
@@ -43,13 +44,13 @@ public class App {
 
 		try {
 			long currentTime = System.currentTimeMillis();
-			runTask1();
+			//runTask1();
 			long elapsed = (System.currentTimeMillis() - currentTime) / 1000;
 			System.out.println("Task1: " + elapsed + " seconds.");
 
-			/*currentTime = System.currentTimeMillis();
+		currentTime = System.currentTimeMillis();
 			runTask2();
-			elapsed = (System.currentTimeMillis() - currentTime) / 1000;
+			/*elapsed = (System.currentTimeMillis() - currentTime) / 1000;
 			System.out.println("Task2: " + elapsed + " seconds.");*/
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -188,15 +189,15 @@ public class App {
 						runtime.sendEvent(tlog);
 					}
 					taxiLogs = dataFileParser.parseNextLinesFromCSVGroupedByDropoffDate();
-					// System.out.println(mostProfArea);
 				}
 
 				
-			/*	if ((currentTime - startingTime) % (60*60*1000) == 0) {
+				if ((currentTime - startingTime) % (60*60*1000) == 0) {
 					System.out.println(mostProfArea);
 					System.out.println("currentTime:" + new Date(currentTime));
+					System.out.println("faszt:" + Task2MedianListener.counter);
 					
-				}*/
+				}
 				currentTime += 1000;
 
 			}
