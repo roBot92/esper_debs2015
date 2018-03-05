@@ -195,7 +195,6 @@ public class App {
 				if ((currentTime - startingTime) % (60*60*1000) == 0) {
 					System.out.println(mostProfArea);
 					System.out.println("currentTime:" + new Date(currentTime));
-					System.out.println("faszt:" + Task2MedianListener.counter);
 					
 				}
 				currentTime += 1000;
