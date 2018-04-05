@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 //import org.junit.After;
@@ -22,6 +23,7 @@ import com.espertech.esper.client.time.CurrentTimeEvent;
 
 import onlab.event.AreaWithProfit;
 import onlab.event.TaxiLog;
+import onlab.event.Tick;
 import onlab.positioning.Cell;
 import onlab.utility.ProfitableAreaToplistSet;
 
@@ -61,16 +63,15 @@ public class EsperTask2Test {
 		TaxiLog tlog1 = setUpTaxilog(cells.get(0), cells.get(1), BigDecimal.ONE, BigDecimal.ONE, "1");
 		TaxiLog tlog2 = setUpTaxilog(cells.get(0), cells.get(1), BigDecimal.ONE, BigDecimal.TEN, "2");
 
-		AreaWithProfit area = new AreaWithProfit(cells.get(0), BigDecimal.valueOf(2),
-				new Date(clock.getTimeInMillis()));
+		AreaWithProfit area = new AreaWithProfit(cells.get(0), BigDecimal.valueOf(2), clock.getTime());
 
 		sendEvents(Arrays.asList(tlog1), true);
 
-		assertTrue("check1", area.valueEquals(toplist.get(0)) && toplist.size() == 1);
+		assertTrue("check1", area.valueEquals(toplist.get(0)));
 
 		clock.add(Calendar.MINUTE, 1);
-		tlog2.setDropoff_datetime(new Date(clock.getTimeInMillis()));
-		area.setLastInserted(new Date(clock.getTimeInMillis()));
+		tlog2.setDropoff_datetime(clock.getTime());
+		area.setLastInserted(clock.getTime());
 		area.setMedianProfitIndex(BigDecimal.valueOf(6.5));
 
 		sendEvents(Arrays.asList(tlog2), true);
