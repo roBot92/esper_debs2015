@@ -50,7 +50,7 @@ public class App {
 	public static void main(String[] args) {
 
 		try {
-			// runTask1();
+		    runTask1();
 			runTask2();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -60,7 +60,7 @@ public class App {
 
 	public static EPRuntime initializeEngineForTask1(FrequentRoutesToplistSet toplist) {
 		EPServiceProvider engine = EPServiceProviderManager.getDefaultProvider();
-
+		engine.initialize();
 		engine.getEPAdministrator().getConfiguration().addEventType(TaxiLog.class);
 		EPStatement insertedStatement = engine.getEPAdministrator()
 				.createEPL(getEplQuery(TASK_1_2_INSERTED_DELAY_QUERY));
@@ -71,14 +71,14 @@ public class App {
 		runtime.sendEvent(new TimerControlEvent(TimerControlEvent.ClockType.CLOCK_EXTERNAL));
 		insertedStatement.addListener(new Task1InsertedDelayListener(toplist));
 		statement.addListener(new Task1Listener(toplist));
-
+		
 		return runtime;
 	}
 
 	public static EPRuntime initializeEngineForTask2(ProfitableAreaToplistSet toplist) {
 
 		EPServiceProvider engine = EPServiceProviderManager.getDefaultProvider();
-
+		engine.initialize();
 		engine.getEPAdministrator().getConfiguration().addEventType(TaxiLog.class);
 
 		engine.getEPAdministrator().createEPL(getEplQuery(NAMED_WINDOW_DECLARATION));
@@ -127,13 +127,15 @@ public class App {
 
 	public static void runTask1() throws IOException {
 		EPRuntime epRuntime = initializeEngineForTask1(freqRouteToplist);
-		runTask(new FrequentRoutesToplistSet(), epRuntime, DebsMain.task1ResultToCompareFileName, null,
+		runTask(freqRouteToplist, epRuntime, DebsMain.task1ResultToCompareFileName, null,
 				DebsMain.OUTPUT_COOMPARING_MODE, 1);
 		freqRouteToplist.clear();
-		runTask(new FrequentRoutesToplistSet(), epRuntime, DebsMain.task1MemoryMeasuringResultFileName, null,
+		epRuntime = initializeEngineForTask1(freqRouteToplist);
+		runTask(freqRouteToplist, epRuntime, DebsMain.task1MemoryMeasuringResultFileName, null,
 				DebsMain.MEMORY_MEASURING_MODE, 1);
 		freqRouteToplist.clear();
-		runTask(new FrequentRoutesToplistSet(), epRuntime, DebsMain.task2TimeMeasuringResultFileName, null,
+		epRuntime = initializeEngineForTask1(freqRouteToplist);
+		runTask(freqRouteToplist, epRuntime, DebsMain.task2TimeMeasuringResultFileName, null,
 				DebsMain.TIME_MEASURING_MODE, 1);
 
 	}
@@ -146,9 +148,11 @@ public class App {
 		runTask(mostProfArea, epRuntime, DebsMain.task2ResultToCompareFileName, updateNamedWindowQuery,
 				DebsMain.OUTPUT_COOMPARING_MODE, 2);
 		mostProfArea.clear();
+		epRuntime = initializeEngineForTask2(mostProfArea);
 		runTask(mostProfArea, epRuntime, DebsMain.task2MemoryMeasuringResultFileName, updateNamedWindowQuery,
 				DebsMain.MEMORY_MEASURING_MODE, 2);
 		mostProfArea.clear();
+		epRuntime = initializeEngineForTask2(mostProfArea);
 		runTask(mostProfArea, epRuntime, DebsMain.task2TimeMeasuringResultFileName, updateNamedWindowQuery,
 				DebsMain.TIME_MEASURING_MODE, 2);
 
@@ -183,7 +187,7 @@ public class App {
 			long currentTime = DataFileParser.getCURRENT_TIME();
 			long startingTime = DataFileParser.getCURRENT_TIME();
 
-			long countOfProcessedTlogs = taxiLogs.size();
+			long countOfProcessedTlogs = 0;
 			while (currentTime - startingTime <= TEST_INTERVAL_IN_IN_MS) {
 				epRuntime.sendEvent(new CurrentTimeEvent(currentTime));
 				if (currentTime >= DataFileParser.getCURRENT_TIME()) {
@@ -200,7 +204,7 @@ public class App {
 					// System.out.println(freqRouteToplist);
 				}
 
-				DebsMain.handlePrintActions(toplist, runningMode, previousToplistWithoutDelay, resultFileWriter,
+				previousToplistWithoutDelay = DebsMain.handlePrintActions(toplist, runningMode, previousToplistWithoutDelay, resultFileWriter,
 						currentTime, countOfProcessedTlogs, startingTime, BENCHMARK_FREQUENCY_IN_MS, previousTime,
 						runtime);
 				currentTime += 1000;
