@@ -1,2 +1,2 @@
-select count(*) as frequency, pickup_cell, dropoff_cell, max(dropoff_datetime) as max_dropoff_datetime, avg(inserted) as inserted_for_delay from TaxiLog#time(30 min 1 sec) 
+select count(*) as frequency, pickup_cell, dropoff_cell, max(dropoff_datetime) as max_dropoff_datetime, avg(inserted) as inserted_for_delay from TaxiLog#time(30 min 1 millisecond) 
 where pickup_cell is not null and dropoff_cell is not null and dropoff_datetime is not null group by pickup_cell, dropoff_cell

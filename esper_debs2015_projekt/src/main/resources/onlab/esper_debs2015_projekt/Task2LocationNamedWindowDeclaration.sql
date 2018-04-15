@@ -1,1 +1,1 @@
-create window TaxiLogLocationWindow#time(30 min 1 sec) as (hack_license String, dropoff_cell Object, valid Boolean, insertTime Date)
+create window TaxiLogLocationWindow#time(30 min 1 millisecond) as (hack_license String, dropoff_cell Object, valid Boolean, insertTime Date)

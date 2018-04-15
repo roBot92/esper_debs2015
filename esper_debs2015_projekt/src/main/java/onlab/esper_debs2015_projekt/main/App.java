@@ -44,13 +44,13 @@ public class App {
 	static FrequentRoutesToplistSet freqRouteToplist = new FrequentRoutesToplistSet();
 	static ProfitableAreaToplistSet mostProfArea = new ProfitableAreaToplistSet();
 
-	public static final long TEST_INTERVAL_IN_IN_MS = 1 * 60 * 60 * 1000;
+	public static final long TEST_INTERVAL_IN_IN_MS = 2 * 60 * 60 * 1000;
 	public static final long BENCHMARK_FREQUENCY_IN_MS = 1000 * 60;
 
 	public static void main(String[] args) {
 
 		try {
-		    runTask1();
+			runTask1();
 			runTask2();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -71,7 +71,7 @@ public class App {
 		runtime.sendEvent(new TimerControlEvent(TimerControlEvent.ClockType.CLOCK_EXTERNAL));
 		insertedStatement.addListener(new Task1InsertedDelayListener(toplist));
 		statement.addListener(new Task1Listener(toplist));
-		
+
 		return runtime;
 	}
 
@@ -180,7 +180,7 @@ public class App {
 			return;
 		}
 		String previousToplistWithoutDelay = null;
-		long previousTime = System.currentTimeMillis();
+		DebsMain.restartCurrentTime();
 		try (DataFileParser dataFileParser = new DataFileParser(DebsMain.DATA_FILE_URL, DebsMain.DELIMITER,
 				DebsMain.columncount, chelper)) {
 			taxiLogs = dataFileParser.parseNextLinesFromCSVGroupedByDropoffDate();
@@ -193,7 +193,7 @@ public class App {
 				if (currentTime >= DataFileParser.getCURRENT_TIME()) {
 					for (TaxiLog tlog : taxiLogs) {
 						tlog.setInserted(System.currentTimeMillis());
-						if (onDemandQuery != null) {
+						if (onDemandQuery != null && tlog.getPickup_cell() != null && tlog.getDropoff_cell() != null) {
 							onDemandQuery.setObject(1, tlog.getHack_license());
 							epRuntime.executeQuery(onDemandQuery);
 						}
@@ -201,14 +201,12 @@ public class App {
 						countOfProcessedTlogs++;
 					}
 					taxiLogs = dataFileParser.parseNextLinesFromCSVGroupedByDropoffDate();
-					// System.out.println(freqRouteToplist);
 				}
 
-				previousToplistWithoutDelay = DebsMain.handlePrintActions(toplist, runningMode, previousToplistWithoutDelay, resultFileWriter,
-						currentTime, countOfProcessedTlogs, startingTime, BENCHMARK_FREQUENCY_IN_MS, previousTime,
-						runtime);
+				previousToplistWithoutDelay = DebsMain.handlePrintActions(toplist, runningMode,
+						previousToplistWithoutDelay, resultFileWriter, currentTime, countOfProcessedTlogs, startingTime,
+						BENCHMARK_FREQUENCY_IN_MS, runtime);
 				currentTime += 1000;
-				previousTime = System.currentTimeMillis();
 			}
 		} finally {
 			if (resultFileWriter != null) {
