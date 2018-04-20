@@ -1,4 +1,4 @@
-package onlab.esper_debs2015_projekt.main;
+package hu.bme.mit.esper.test;
 
 import static org.junit.Assert.*;
 
@@ -8,7 +8,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 //import org.junit.After;
@@ -21,11 +20,11 @@ import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.time.CurrentTimeEvent;
 
-import onlab.event.AreaWithProfit;
-import onlab.event.TaxiLog;
-import onlab.event.Tick;
-import onlab.positioning.Cell;
-import onlab.utility.ProfitableAreaToplistSet;
+import hu.bme.mit.entities.AreaWithProfit;
+import hu.bme.mit.entities.TaxiLog;
+import hu.bme.mit.esper.main.App;
+import hu.bme.mit.positioning.Cell;
+import hu.bme.mit.toplist.ProfitableAreaToplistSet;
 
 public class EsperTask2Test {
 

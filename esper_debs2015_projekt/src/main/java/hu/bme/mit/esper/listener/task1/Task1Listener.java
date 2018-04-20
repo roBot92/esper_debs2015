@@ -1,12 +1,12 @@
-package onlab.esper_deps2015_projekt.listeners;
+package hu.bme.mit.esper.listener.task1;
 
 import java.util.Date;
 
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
 
-import onlab.positioning.Cell;
-import onlab.utility.FrequentRoutesToplistSet;
+import hu.bme.mit.positioning.Cell;
+import hu.bme.mit.toplist.FrequentRoutesToplistSet;
 
 public class Task1Listener implements UpdateListener {
 

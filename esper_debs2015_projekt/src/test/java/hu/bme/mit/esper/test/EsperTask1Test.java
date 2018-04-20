@@ -1,4 +1,4 @@
-package onlab.esper_debs2015_projekt.main;
+package hu.bme.mit.esper.test;
 
 import static org.junit.Assert.*;
 
@@ -14,11 +14,11 @@ import org.junit.Test;
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.time.CurrentTimeEvent;
 
-import onlab.positioning.Cell;
-import onlab.event.Route;
-import onlab.event.TaxiLog;
-import onlab.utility.FrequentRoutesToplistSet;
-
+import hu.bme.mit.entities.Route;
+import hu.bme.mit.entities.TaxiLog;
+import hu.bme.mit.esper.main.App;
+import hu.bme.mit.positioning.Cell;
+import hu.bme.mit.toplist.FrequentRoutesToplistSet;
 public class EsperTask1Test {
 
 	private FrequentRoutesToplistSet toplist;

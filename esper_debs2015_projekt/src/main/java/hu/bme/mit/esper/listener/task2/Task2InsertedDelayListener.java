@@ -1,21 +1,21 @@
-package onlab.esper_deps2015_projekt.listeners;
+package hu.bme.mit.esper.listener.task2;
 
 
 
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
 
-import onlab.positioning.Cell;
-import onlab.utility.ProfitableAreaToplistSet;
+import hu.bme.mit.positioning.Cell;
+import hu.bme.mit.toplist.ToplistSetInterface;
 
 public class Task2InsertedDelayListener implements UpdateListener {
 
-	private ProfitableAreaToplistSet mostProfArea;
+	private ToplistSetInterface mostProfArea;
 	private static final String PICKUP_CELL = "pickup_cell";
 	private static final String DROPOFF_CELL = "dropoff_cell";
 	private static final String INSERTED_FOR_DELAY = "inserted_for_delay";
 
-	public Task2InsertedDelayListener(ProfitableAreaToplistSet mostProfArea) {
+	public Task2InsertedDelayListener(ToplistSetInterface mostProfArea) {
 		this.mostProfArea = mostProfArea;
 	}
 

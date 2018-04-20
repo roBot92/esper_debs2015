@@ -1,4 +1,4 @@
-package onlab.esper_debs2015_projekt.main;
+package hu.bme.mit.esper.main;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,41 +17,41 @@ import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.time.CurrentTimeEvent;
 import com.espertech.esper.client.time.TimerControlEvent;
 
-import onlab.esper_deps2015_projekt.listeners.Task1InsertedDelayListener;
-import onlab.esper_deps2015_projekt.listeners.Task1Listener;
-import onlab.esper_deps2015_projekt.listeners.Task2CountOfEmptyTaxesListener;
-import onlab.esper_deps2015_projekt.listeners.Task2InsertedDelayListener;
-import onlab.esper_deps2015_projekt.listeners.Task2MedianListener;
-import onlab.event.TaxiLog;
-import onlab.main.DebsMain;
-import onlab.positioning.CellHelper;
-import onlab.utility.DataFileParser;
-import onlab.utility.FrequentRoutesToplistSet;
-import onlab.utility.ProfitableAreaToplistSet;
-import onlab.utility.ToplistSetInterface;
-
+import hu.bme.mit.entities.TaxiLog;
+import hu.bme.mit.esper.listener.Task1InsertedDelayListener;
+import hu.bme.mit.esper.listener.task1.Task1Listener;
+import hu.bme.mit.esper.listener.task2.Task2CountOfEmptyTaxesListener;
+import hu.bme.mit.esper.listener.task2.Task2InsertedDelayListener;
+import hu.bme.mit.esper.listener.task2.Task2MedianListener;
+import hu.bme.mit.positioning.CellHelper;
+import hu.bme.mit.toplist.FrequentRoutesToplistSet;
+import hu.bme.mit.toplist.ProfitableAreaToplistSet;
+import hu.bme.mit.toplist.ToplistSetInterface;
+import hu.bme.mit.utility.DataFileParser;
+import hu.bme.mit.utility.ExecutionSetup;
+import hu.bme.mit.utility.PrintHelper;
 public class App {
 
-	static String TASK1_QUERY = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task1Query.sql";
-	static String TASK_1_2_INSERTED_DELAY_QUERY = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task1_2InsertedDelayQuery.sql";
+	public static String TASK1_QUERY = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task1Query.sql";
+	public static String TASK_1_2_INSERTED_DELAY_QUERY = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task1_2InsertedDelayQuery.sql";
 	//
-	static String MEDIAN_OF_CELL = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2GetMedianByCell.sql";
-	static String NAMED_WINDOW_DECLARATION = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2LocationNamedWindowDeclaration.sql";
-	static String COUNT_OF_EMPTY_TAXILOGS_BY_CELL = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2CountOfValidTaxiLogLocations.sql";
-	static String NAMED_WINDOW_INSERTION_QUERY = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2InsertIntoLocationNamedWindow.sql";
-	static String ONDEMAND_UPDATE_NAMED_WINDOW_QUERY = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2OnDemandUpdateParametrizedQuery.sql";
+	public static String MEDIAN_OF_CELL = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2GetMedianByCell.sql";
+	public static String NAMED_WINDOW_DECLARATION = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2LocationNamedWindowDeclaration.sql";
+	public static String COUNT_OF_EMPTY_TAXILOGS_BY_CELL = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2CountOfValidTaxiLogLocations.sql";
+	public static String NAMED_WINDOW_INSERTION_QUERY = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2InsertIntoLocationNamedWindow.sql";
+	public static String ONDEMAND_UPDATE_NAMED_WINDOW_QUERY = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2OnDemandUpdateParametrizedQuery.sql";
 
 	static FrequentRoutesToplistSet freqRouteToplist = new FrequentRoutesToplistSet();
 	static ProfitableAreaToplistSet mostProfArea = new ProfitableAreaToplistSet();
 
-	public static final long TEST_INTERVAL_IN_IN_MS = 2 * 60 * 60 * 1000;
-	public static final long BENCHMARK_FREQUENCY_IN_MS = 1000 * 60;
+	public static final long TEST_INTERVAL_IN_IN_MS = 31*24 * 60 * 60 * 1000l;
+	public static final long BENCHMARK_FREQUENCY_IN_MS = 1000 * 60l;
 
 	public static void main(String[] args) {
 
 		try {
 			runTask1();
-			runTask2();
+		//	runTask2();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -62,15 +62,18 @@ public class App {
 		EPServiceProvider engine = EPServiceProviderManager.getDefaultProvider();
 		engine.initialize();
 		engine.getEPAdministrator().getConfiguration().addEventType(TaxiLog.class);
-		EPStatement insertedStatement = engine.getEPAdministrator()
-				.createEPL(getEplQuery(TASK_1_2_INSERTED_DELAY_QUERY));
+		
 		EPStatement statement = engine.getEPAdministrator().createEPL(getEplQuery(TASK1_QUERY));
 
 		EPRuntime runtime = engine.getEPRuntime();
 		// Set to external clock
 		runtime.sendEvent(new TimerControlEvent(TimerControlEvent.ClockType.CLOCK_EXTERNAL));
-		insertedStatement.addListener(new Task1InsertedDelayListener(toplist));
+		
 		statement.addListener(new Task1Listener(toplist));
+		
+		EPStatement insertedStatement = engine.getEPAdministrator()
+				.createEPL(getEplQuery(TASK_1_2_INSERTED_DELAY_QUERY));
+		insertedStatement.addListener(new Task1InsertedDelayListener(toplist));
 
 		return runtime;
 	}
@@ -127,16 +130,16 @@ public class App {
 
 	public static void runTask1() throws IOException {
 		EPRuntime epRuntime = initializeEngineForTask1(freqRouteToplist);
-		runTask(freqRouteToplist, epRuntime, DebsMain.task1ResultToCompareFileName, null,
-				DebsMain.OUTPUT_COOMPARING_MODE, 1);
+	//	runTask(freqRouteToplist, epRuntime, DebsMain.task1ResultToCompareFileName, null,
+	//			DebsMain.OUTPUT_COOMPARING_MODE, 1);
+	//	freqRouteToplist.clear();
+	//	epRuntime = initializeEngineForTask1(freqRouteToplist);
+	//	runTask(freqRouteToplist, epRuntime, DebsMain.task1MemoryMeasuringResultFileName, null,
+	//			DebsMain.MEMORY_MEASURING_MODE, 1);
 		freqRouteToplist.clear();
-		epRuntime = initializeEngineForTask1(freqRouteToplist);
-		runTask(freqRouteToplist, epRuntime, DebsMain.task1MemoryMeasuringResultFileName, null,
-				DebsMain.MEMORY_MEASURING_MODE, 1);
-		freqRouteToplist.clear();
-		epRuntime = initializeEngineForTask1(freqRouteToplist);
-		runTask(freqRouteToplist, epRuntime, DebsMain.task2TimeMeasuringResultFileName, null,
-				DebsMain.TIME_MEASURING_MODE, 1);
+	//	epRuntime = initializeEngineForTask1(freqRouteToplist);
+		runTask(freqRouteToplist, epRuntime, ExecutionSetup.task1TimeMeasuringResultFileName, null,
+				ExecutionSetup.TIME_MEASURING_MODE, 1);
 
 	}
 
@@ -145,26 +148,34 @@ public class App {
 		EPRuntime epRuntime = initializeEngineForTask2(mostProfArea);
 		EPOnDemandPreparedQueryParameterized updateNamedWindowQuery = epRuntime
 				.prepareQueryWithParameters(getEplQuery(ONDEMAND_UPDATE_NAMED_WINDOW_QUERY));
-		runTask(mostProfArea, epRuntime, DebsMain.task2ResultToCompareFileName, updateNamedWindowQuery,
+	/*	runTask(mostProfArea, epRuntime, DebsMain.task2ResultToCompareFileName, updateNamedWindowQuery,
 				DebsMain.OUTPUT_COOMPARING_MODE, 2);
 		mostProfArea.clear();
 		epRuntime = initializeEngineForTask2(mostProfArea);
 		runTask(mostProfArea, epRuntime, DebsMain.task2MemoryMeasuringResultFileName, updateNamedWindowQuery,
-				DebsMain.MEMORY_MEASURING_MODE, 2);
+				DebsMain.MEMORY_MEASURING_MODE, 2);*/
 		mostProfArea.clear();
 		epRuntime = initializeEngineForTask2(mostProfArea);
-		runTask(mostProfArea, epRuntime, DebsMain.task2TimeMeasuringResultFileName, updateNamedWindowQuery,
-				DebsMain.TIME_MEASURING_MODE, 2);
+		runTask(mostProfArea, epRuntime, ExecutionSetup.task2TimeMeasuringResultFileName, updateNamedWindowQuery,
+				ExecutionSetup.TIME_MEASURING_MODE, 2);
 
 	}
 
 	public static void runTask(ToplistSetInterface toplist, EPRuntime epRuntime, String fileName,
 			EPOnDemandPreparedQueryParameterized onDemandQuery, int runningMode, int divisor) throws IOException {
-		CellHelper chelper = new CellHelper(DebsMain.FIRST_CELL_X, DebsMain.FIRST_CELL_Y,
-				DebsMain.SHIFT_X.divide(BigDecimal.valueOf(divisor)),
-				DebsMain.SHIFT_Y.divide(BigDecimal.valueOf(divisor)), 300 * divisor);
+		CellHelper chelper = new CellHelper(ExecutionSetup.FIRST_CELL_X, ExecutionSetup.FIRST_CELL_Y,
+				ExecutionSetup.SHIFT_X.divide(BigDecimal.valueOf(divisor)),
+				ExecutionSetup.SHIFT_Y.divide(BigDecimal.valueOf(divisor)), 300 * divisor);
 		List<TaxiLog> taxiLogs = null;
 
+		PrintHelper.restartCurrentTime();
+		System.gc();
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return;
+		}
 		Runtime runtime = Runtime.getRuntime();
 		File resultFile = null;
 		BufferedWriter resultFileWriter = null;
@@ -180,9 +191,9 @@ public class App {
 			return;
 		}
 		String previousToplistWithoutDelay = null;
-		DebsMain.restartCurrentTime();
-		try (DataFileParser dataFileParser = new DataFileParser(DebsMain.DATA_FILE_URL, DebsMain.DELIMITER,
-				DebsMain.columncount, chelper)) {
+		PrintHelper.restartCurrentTime();
+		try (DataFileParser dataFileParser = new DataFileParser(ExecutionSetup.DATA_FILE_URL, ExecutionSetup.DELIMITER,
+				ExecutionSetup.columncount, chelper)) {
 			taxiLogs = dataFileParser.parseNextLinesFromCSVGroupedByDropoffDate();
 			long currentTime = DataFileParser.getCURRENT_TIME();
 			long startingTime = DataFileParser.getCURRENT_TIME();
@@ -203,7 +214,7 @@ public class App {
 					taxiLogs = dataFileParser.parseNextLinesFromCSVGroupedByDropoffDate();
 				}
 
-				previousToplistWithoutDelay = DebsMain.handlePrintActions(toplist, runningMode,
+				previousToplistWithoutDelay = PrintHelper.handlePrintActions(toplist, runningMode,
 						previousToplistWithoutDelay, resultFileWriter, currentTime, countOfProcessedTlogs, startingTime,
 						BENCHMARK_FREQUENCY_IN_MS, runtime);
 				currentTime += 1000;

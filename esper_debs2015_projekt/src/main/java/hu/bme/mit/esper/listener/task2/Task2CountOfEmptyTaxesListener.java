@@ -1,12 +1,12 @@
-package onlab.esper_deps2015_projekt.listeners;
+package hu.bme.mit.esper.listener.task2;
 
 import java.util.Date;
 
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
 
-import onlab.positioning.Cell;
-import onlab.utility.ProfitableAreaToplistSet;
+import hu.bme.mit.positioning.Cell;
+import hu.bme.mit.toplist.ProfitableAreaToplistSet;
 
 public class Task2CountOfEmptyTaxesListener implements UpdateListener {
 
