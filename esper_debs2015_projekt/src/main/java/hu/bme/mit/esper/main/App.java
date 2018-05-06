@@ -32,7 +32,7 @@ import hu.bme.mit.utility.ExecutionSetup;
 import hu.bme.mit.utility.PrintHelper;
 public class App {
 
-	public static String TASK1_QUERY = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task1Query.sql";
+	public static String TASK1_QUERY = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task1CountOfRoutes.sql";
 	public static String TASK_1_2_INSERTED_DELAY_QUERY = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task1_2InsertedDelayQuery.sql";
 	//
 	public static String MEDIAN_OF_CELL = "C:\\Users\\Rózsavölgyi Botond\\git\\esper_debs2015\\esper_debs2015_projekt\\src\\main\\resources\\onlab\\esper_debs2015_projekt\\Task2GetMedianByCell.sql";
@@ -130,14 +130,14 @@ public class App {
 
 	public static void runTask1() throws IOException {
 		EPRuntime epRuntime = initializeEngineForTask1(freqRouteToplist);
-	//	runTask(freqRouteToplist, epRuntime, DebsMain.task1ResultToCompareFileName, null,
-	//			DebsMain.OUTPUT_COOMPARING_MODE, 1);
-	//	freqRouteToplist.clear();
-	//	epRuntime = initializeEngineForTask1(freqRouteToplist);
-	//	runTask(freqRouteToplist, epRuntime, DebsMain.task1MemoryMeasuringResultFileName, null,
-	//			DebsMain.MEMORY_MEASURING_MODE, 1);
+		runTask(freqRouteToplist, epRuntime, ExecutionSetup.task1ResultToCompareFileName, null,
+				ExecutionSetup.OUTPUT_COOMPARING_MODE, 1);
 		freqRouteToplist.clear();
-	//	epRuntime = initializeEngineForTask1(freqRouteToplist);
+		epRuntime = initializeEngineForTask1(freqRouteToplist);
+		runTask(freqRouteToplist, epRuntime, ExecutionSetup.task1MemoryMeasuringResultFileName, null,
+				ExecutionSetup.MEMORY_MEASURING_MODE, 1);
+		freqRouteToplist.clear();
+		epRuntime = initializeEngineForTask1(freqRouteToplist);
 		runTask(freqRouteToplist, epRuntime, ExecutionSetup.task1TimeMeasuringResultFileName, null,
 				ExecutionSetup.TIME_MEASURING_MODE, 1);
 
@@ -148,12 +148,12 @@ public class App {
 		EPRuntime epRuntime = initializeEngineForTask2(mostProfArea);
 		EPOnDemandPreparedQueryParameterized updateNamedWindowQuery = epRuntime
 				.prepareQueryWithParameters(getEplQuery(ONDEMAND_UPDATE_NAMED_WINDOW_QUERY));
-	/*	runTask(mostProfArea, epRuntime, DebsMain.task2ResultToCompareFileName, updateNamedWindowQuery,
-				DebsMain.OUTPUT_COOMPARING_MODE, 2);
+		runTask(mostProfArea, epRuntime, ExecutionSetup.task2ResultToCompareFileName, updateNamedWindowQuery,
+				ExecutionSetup.OUTPUT_COOMPARING_MODE, 2);
 		mostProfArea.clear();
 		epRuntime = initializeEngineForTask2(mostProfArea);
-		runTask(mostProfArea, epRuntime, DebsMain.task2MemoryMeasuringResultFileName, updateNamedWindowQuery,
-				DebsMain.MEMORY_MEASURING_MODE, 2);*/
+		runTask(mostProfArea, epRuntime, ExecutionSetup.task2MemoryMeasuringResultFileName, updateNamedWindowQuery,
+				ExecutionSetup.MEMORY_MEASURING_MODE, 2);
 		mostProfArea.clear();
 		epRuntime = initializeEngineForTask2(mostProfArea);
 		runTask(mostProfArea, epRuntime, ExecutionSetup.task2TimeMeasuringResultFileName, updateNamedWindowQuery,
