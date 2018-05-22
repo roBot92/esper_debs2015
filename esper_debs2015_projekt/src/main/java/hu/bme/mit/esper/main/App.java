@@ -51,7 +51,7 @@ public class App {
 
 		try {
 			runTask1();
-		//	runTask2();
+			runTask2();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
